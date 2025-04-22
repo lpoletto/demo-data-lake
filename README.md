@@ -1,6 +1,6 @@
 # trino-minio-docker
 
-Minimal example to run Trino with Minio and the Hive standalone metastore on Docker. The data in this tutorial was converted into an [Apache Parquet](https://parquet.apache.org/) file from the famous [Iris data set](https://archive.ics.uci.edu/ml/datasets/iris).
+Minimal example to run Trino with Minio and the Hive standalone metastore on Docker. The data in this tutorial was converted into an [Apache Parquet](https://parquet.apache.org/) file from the famous [demo data set](https://archive.ics.uci.edu/ml/datasets/demo).
 
 ## Installation and Setup
 
@@ -41,8 +41,8 @@ Use HTTPS protocol [Yes]: no
 To create a bucket and upload data to minio, type:
 
 ```bash
-s3cmd --config minio.s3cfg mb s3://iris
-s3cmd --config minio.s3cfg put data/iris.parq s3://iris
+s3cmd --config minio.s3cfg mb s3://demo
+s3cmd --config minio.s3cfg put data/demo.parq s3://demo
 ```
 To list all object in all buckets, type:
 
@@ -64,19 +64,23 @@ Create schema and create table with:
 
 ```bash
 ./trino --execute "
-CREATE SCHEMA IF NOT EXISTS minio.iris
-WITH (location = 's3a://iris/');
+CREATE SCHEMA IF NOT EXISTS minio.demo
+WITH (location = 's3a://demo-bucket/');
 
-CREATE TABLE IF NOT EXISTS minio.iris.iris_parquet (
-  sepal_length DOUBLE,
-  sepal_width  DOUBLE,
-  petal_length DOUBLE,
-  petal_width  DOUBLE,
-  class        VARCHAR
+CREATE TABLE IF NOT EXISTS minio.demo.circuits (
+	circuitId VARCHAR,
+	circuitRef VARCHAR,
+	name VARCHAR,
+	location VARCHAR,
+	country VARCHAR,
+	lat VARCHAR,
+	lng VARCHAR,
+	alt VARCHAR,
+	url VARCHAR
 )
 WITH (
-  external_location = 's3a://iris/',
-  format = 'PARQUET'
+  external_location = 's3a://demo-bucket/',
+  format = 'csv'
 );"
 ```
 
@@ -84,8 +88,9 @@ Query the newly created table with:
 
 ```bash
 ./trino --execute "
-SHOW TABLES IN minio.iris;
-SELECT * FROM minio.iris.iris_parquet LIMIT 5;"
+SHOW TABLES IN minio.demo;
+SELECT circuitid, circuitref, name, location, country, lat, lng, alt, url
+FROM minio.demo.circuits LIMIT 5;"
 ```
 
 # License
