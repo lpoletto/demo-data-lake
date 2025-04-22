@@ -1,4 +1,59 @@
 services:
+  # -----------------------------------------------------------
+  # PySpark
+  # -----------------------------------------------------------
+  pyspark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pyspark
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./docker_shared_folder/working_dir:/home/dev/working_dir
+    user: root
+    working_dir: /home/dev/working_dir
+    env_file:
+      - ./docker_shared_folder/working_dir/.env
+    environment:
+      JUPYTER_ENABLE_LAB: '1' 
+      JUPYTER_TOKEN: 'dev'
+      NB_USER: dev
+      NB_GID: 1000
+      CHOWN_HOME: 'yes'
+      CHOWN_HOME_OPTS: '-R'
+      SPARK_CLASSPATH: "/home/dev/working_dir/driver_jdbc/mysql-connector-j-8.0.32.jar:/home/dev/working_dir/spark_drivers/minio-7.1.0.jar:/home/dev/working_dir/spark_drivers/hadoop-aws-3.3.1.jar:/home/dev/working_dir/spark_drivers/aws-java-sdk-bundle-1.12.196.jar"
+    networks:
+      - data-network
+
+  # -----------------------------------------------------------
+  # MySQL
+  # -----------------------------------------------------------
+  mysql:
+    hostname: mysql
+    image: mysql:8.0.32
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: f1db
+      MYSQL_USER: f1user
+      MYSQL_PASSWORD: f1password
+    ports:
+      - "3307:3306"  # Mapeo el puerto 3307 en la máquina local al puerto 3306 dentro del contenedor
+    volumes:
+      - ./docker_shared_folder/working_dir/mysql_data:/var/lib/mysql
+      - ./f1db.sql:/docker-entrypoint-initdb.d/f1db.sql
+    networks:
+      - data-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "f1user", "-pf1password"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+  
+  # -----------------------------------------------------------
+  # Trino
+  # -----------------------------------------------------------
   trino:
     hostname: trino
     image: 'trinodb/trino:351'
@@ -10,6 +65,9 @@ services:
     networks:
       - data-network
 
+  # -----------------------------------------------------------
+  # MariaDB
+  # -----------------------------------------------------------
   mariadb:
     hostname: mariadb
     image: mariadb:10.5.8
@@ -24,6 +82,9 @@ services:
     networks:
       - data-network
 
+  # -----------------------------------------------------------
+  # Hive Metastore
+  # -----------------------------------------------------------
   hive-metastore:
     hostname: hive-metastore
     image: 'bitsondatadev/hive-metastore:latest'
@@ -39,6 +100,9 @@ services:
     networks:
       - data-network
 
+  # -----------------------------------------------------------
+  # MinIO
+  # -----------------------------------------------------------
   minio:
     hostname: minio
     image: minio/minio:RELEASE.2024-05-10T01-41-38Z

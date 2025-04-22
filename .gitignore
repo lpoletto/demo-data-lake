@@ -1,2 +1,45 @@
+# Ignorar directorios de datos de Docker
 docker_shared_folder/working_dir/data/*
 docker_shared_folder/working_dir/driver_jdbc/*
+docker_shared_folder/working_dir/mysql_data/*
+docker_shared_folder/working_dir/minio_data/*
+docker_shared_folder/working_dir/postgres_data/*
+docker_shared_folder/working_dir/pgadmin_data/*
+docker_shared_folder/working_dir/trino_data/*
+docker_shared_folder/working_dir/spark_drivers/*
+# Ignorar checkpoints de Jupyter Notebook
+docker_shared_folder/working_dir/.ipynb_checkpoints/
+docker_shared_folder/working_dir/notebooks/.ipynb_checkpoints/
+docker_shared_folder/working_dir/notebooks/bronze_ingest/.ipynb_checkpoints/*
+docker_shared_folder/working_dir/notebooks/silver_ingest/.ipynb_checkpoints/*
+docker_shared_folder/working_dir/notebooks/gold_ingest/.ipynb_checkpoints/*
+
+# Ignorar archivos de entorno
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Ignorar archivos de configuración de IDE
+.idea/
+.vscode/
+
+# Ignorar archivos generados por Docker
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Ignorar logs y archivos temporales
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Ignorar archivos de configuración local
+local_settings.py

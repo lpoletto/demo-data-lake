@@ -1,2 +1,0 @@
-s3 jars --> driver_jdbc
-link--> https://github.com/hnawaz007/pythondataanalysis/tree/main/data-lake/s3%20jars

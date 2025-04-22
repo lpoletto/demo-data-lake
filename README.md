@@ -96,3 +96,5 @@ FROM minio.demo.circuits LIMIT 5;"
 # License
 
 This project is licensed under the MIT license. See the [LICENSE](LICENSE) for details.
+
+s3 jars link --> https://github.com/hnawaz007/pythondataanalysis/tree/main/data-lake/s3%20jars
