@@ -43,3 +43,6 @@ venv.bak/
 
 # Ignorar archivos de configuración local
 local_settings.py
+
+# Ignorar archivos de configuración de MinIO
+minio.s3cfg
